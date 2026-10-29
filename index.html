@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halloween Sprint Retro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Creepster / Silkscreen & Prompt -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Creepster&family=Silkscreen&family=Prompt:wght@300;400;500;600;700;800&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        spooky: {
+                            orange: '#FF6B00',
+                            purple: '#A855F7',
+                            green: '#22C55E',
+                            dark: '#0F0918',
+                            cardBg: '#180E29',
+                            blood: '#EF4444',
+                            yellow: '#FACC15',
+                            ghost: '#E2E8F0'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        pixel: ['Silkscreen', 'cursive'],
+                        scary: ['Creepster', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #0F0918;
+            background-image: 
+                radial-gradient(circle at 50% 20%, rgba(168, 85, 247, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 0, 0.12), transparent 40%),
+                linear-gradient(rgba(255, 107, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        .font-scary {
+            font-family: 'Creepster', cursive;
+            letter-spacing: 2px;
+        }
+
+        .font-pixel {
+            font-family: 'Silkscreen', cursive;
+        }
+
+        .spooky-border {
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .pixel-btn {
+            box-shadow: 3px 3px 0px #000;
+            transition: all 0.1s ease;
+        }
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #000;
+        }
+
+        .sticky-note {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 4px 6px 0px rgba(0,0,0,0.6);
+        }
+        .sticky-note:hover {
+            transform: scale(1.02) rotate(-1deg) !important;
+            box-shadow: 6px 10px 0px rgba(0,0,0,0.8);
+            z-index: 20;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F0918;
+            border: 1px solid #3b1259;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF6B00;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A855F7;
+        }
+
+        @keyframes spookyPulse {
+            0%, 100% { text-shadow: 0 0 8px #FF6B00, 0 0 15px #FF6B00; }
+            50% { text-shadow: 0 0 12px #22C55E, 0 0 22px #22C55E; }
+        }
+        .spooky-title {
+            animation: spookyPulse 3.5s infinite alternate;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between" id="appBody">
+
+    <!-- Top Navigation / Spooky Header -->
+    <header class="border-b-4 border-spooky-orange bg-spooky-dark/95 backdrop-blur-md sticky top-0 z-40 px-4 py-3 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-spooky-orange via-spooky-purple to-black border-2 border-spooky-yellow flex items-center justify-center text-spooky-yellow text-2xl pixel-btn">
+                    🎃
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg md:text-xl font-black text-spooky-orange tracking-wider font-scary spooky-title">HALLOWEEN SPRINT NIGHTMARE & TREAT</h1>
+                        <span class="px-2 py-0.5 text-[10px] bg-spooky-purple text-white font-black uppercase rounded spooky-border border border-spooky-yellow">SPOOKY RETRO</span>
+                    </div>
+                    <p class="text-xs text-purple-300">10 คำถามพิสูจน์วิญญาณสู้ชีวิต 👻🕸️</p>
+                </div>
+            </div>
+
+            <!-- Stats & Quick Actions -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
+                <!-- Admin/Facilitator Toggle for Retro Lead -->
+                <button onclick="toggleAdminMode()" id="adminToggleBtn" class="bg-black border-2 border-spooky-purple text-stone-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold pixel-btn flex items-center gap-1.5">
+                    🔒 <span id="adminToggleText">โหมดสมาชิกปกติ</span>
+                </button>
+
+                <!-- Sound Mode Switcher -->
+                <button onclick="switchSoundMode()" id="soundModeBtn" class="bg-black border-2 border-spooky-orange text-spooky-orange hover:bg-stone-900 px-3 py-1.5 rounded-lg text-xs font-bold pixel-btn flex items-center gap-1.5">
+                    🧛‍♂️ <span id="soundModeText">Dracula Laugh</span>
+                </button>
+
+                <!-- Sound Toggle Button -->
+                <button onclick="toggleSound()" id="soundToggleBtn" class="bg-black border-2 border-spooky-yellow text-spooky-yellow hover:bg-stone-900 px-3 py-1.5 rounded-lg text-xs font-bold pixel-btn flex items-center gap-1.5">
+                    🔊 <span id="soundToggleText">เปิดเสียงสยอง</span>
+                </button>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex items-center bg-black/80 border-2 border-spooky-purple rounded-lg p-1 text-xs font-semibold space-x-1">
+                    <button onclick="switchTab('questions')" id="tab-questions" class="px-3 py-1.5 rounded text-spooky-yellow bg-spooky-purple/60 border border-spooky-yellow transition-all">
+                        🎃 10 คำถามอาถรรพ์
+                    </button>
+                    <button onclick="switchTab('summary')" id="tab-summary" class="px-3 py-1.5 rounded text-stone-300 hover:text-white transition-all">
+                        🧟 สรุปรายบุคคล
+                    </button>
+                    <button onclick="switchTab('stories')" id="tab-stories" class="px-3 py-1.5 rounded text-stone-300 hover:text-white transition-all">
+                        📜 เรื่องเล่าสุสาน
+                    </button>
+                    <button onclick="switchTab('shoutout')" id="tab-shoutout" class="px-3 py-1.5 rounded text-stone-300 hover:text-white transition-all">
+                        🧹 ป้ายไฟปราบผี
+                    </button>
+                </nav>
+
+                <!-- Action Button -->
+                <button onclick="openModalForCurrentTab()" class="bg-spooky-orange hover:bg-orange-600 text-black font-extrabold px-3.5 py-2 rounded-lg transition-all pixel-btn flex items-center gap-2 text-xs uppercase border-2 border-black">
+                    <i class="fa-solid fa-ghost"></i> <span id="addBtnLabel">เพิ่มบันทึก</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-6 flex-grow">
+
+        <!-- ================= SECTION 1: 10 SPOOKY SPRINT QUESTIONS ================= -->
+        <section id="section-questions" class="space-y-6">
+            <div class="bg-spooky-cardBg/90 border-2 border-spooky-purple rounded-2xl p-5 shadow-2xl">
+                <!-- User Profile Input -->
+                <div class="bg-black/60 border-2 border-spooky-orange p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <span class="text-2xl">🧙‍♂️</span>
+                        <div class="w-full">
+                            <label class="block text-xs font-bold text-spooky-yellow uppercase">ชื่อหมอผี / ชื่อคุณในทีม / นามแฝง *</label>
+                            <input type="text" id="userNameInput" placeholder="เช่น Alex (Frontend), Witch_QA..." class="w-full md:w-64 bg-stone-900 text-white text-xs p-2 rounded border border-spooky-purple focus:outline-none focus:border-spooky-orange mt-1" oninput="renderUserSummaries()">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <div class="text-right text-xs">
+                            <div class="text-stone-300 font-bold">สถานะคำตอบ:</div>
+                            <div id="quizProgressText" class="text-spooky-green font-pixel">0/10 ข้อ</div>
+                        </div>
+                        <button onclick="submitUserRetro()" class="bg-spooky-green hover:bg-green-600 text-black font-extrabold px-4 py-2 rounded-lg text-xs pixel-btn border-2 border-black flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> ส่งผลสรุปของฉัน
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 border-b border-spooky-purple/60 pb-4">
+                    <div>
+                        <h2 class="text-spooky-orange font-scary text-xl md:text-2xl flex items-center gap-2">
+                            <span>🎃 10 คำถามส่องอาถรรพ์ประจำ SPRINT</span>
+                        </h2>
+                        <p class="text-xs text-purple-200 mt-1">สำรวจความฝันร้ายและขนมหวานใน Sprint ที่ผ่านมาด้วยตัวเลือกสไตล์ฮาโลวีน</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="text-spooky-green font-bold">ความคืบหน้า:</span>
+                        <div class="w-32 bg-black border border-spooky-purple rounded-full h-3.5 overflow-hidden">
+                            <div id="quizProgressBar" class="bg-spooky-green h-full transition-all duration-300" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid of 10 Questions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="questionsGrid">
+                    <!-- Javascript generated questions -->
+                </div>
+
+                <!-- Sprint Feelings / Narrative Section -->
+                <div class="bg-black/70 border-2 border-spooky-yellow p-5 rounded-xl mt-6 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">💬</span>
+                        <h3 class="text-sm font-bold text-spooky-yellow font-pixel">บรรยายความรู้สึกใน Sprint นี้ (Sprint Mood & Feelings)</h3>
+                    </div>
+                    <p class="text-xs text-purple-200">ระบายความรู้สึก ความเหนื่อยล้า ความประทับใจ หรือสิ่งที่อยากบอกเพื่อนๆ ในทีมสั้นๆ:</p>
+                    <textarea id="userFeelingsInput" rows="3" placeholder="เช่น รู้สึกเหนื่อยแต่สนุกมากที่ช่วยกันแก้บั๊กผ่านไปได้, รู้สึกว่า Sprint นี้สื่อสารกันดีขึ้นมากๆ..." class="w-full bg-stone-900 text-white text-xs p-3 rounded-lg border border-spooky-purple focus:outline-none focus:border-spooky-yellow leading-relaxed"></textarea>
+                </div>
+
+                <!-- Individual Shout-Out Input Section -->
+                <div class="bg-black/70 border-2 border-spooky-purple p-5 rounded-xl mt-4 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📣</span>
+                        <h3 class="text-sm font-bold text-spooky-purple font-pixel">อยาก Shout Out ใครเป็นพิเศษไหม? (Optional)</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-spooky-yellow mb-1">ชื่อเพื่อนที่อยากขอบคุณ / มอบป้ายไฟ:</label>
+                            <input type="text" id="userShoutoutToInput" placeholder="เช่น พี่ Alex (Dev), Bow (QA)..." class="w-full bg-stone-900 text-white text-xs p-2.5 rounded border border-spooky-purple focus:outline-none focus:border-spooky-yellow">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-spooky-yellow mb-1">ข้อความขอบคุณ / Trick or Treat:</label>
+                            <input type="text" id="userShoutoutMsgInput" placeholder="เช่น ขอบคุณที่ช่วยแก้บั๊กตอนเที่ยงคืนคืนวันพุธ..." class="w-full bg-stone-900 text-white text-xs p-2.5 rounded border border-spooky-purple focus:outline-none focus:border-spooky-yellow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: TEAM MEMBER SUMMARIES ================= -->
+        <section id="section-summary" class="space-y-6 hidden">
+            <div class="bg-spooky-cardBg/90 border-2 border-spooky-yellow rounded-2xl p-5 shadow-2xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 border-b border-spooky-yellow/40 pb-4">
+                    <div>
+                        <h2 class="text-spooky-yellow font-scary text-xl md:text-2xl flex items-center gap-2">
+                            <span>🧟 สรุปผลรายบุคคล (1 คน ต่อ 1 การ์ด)</span>
+                        </h2>
+                        <p class="text-xs text-purple-200 mt-1">คลิกที่การ์ดเพื่อดูรายละเอียดคำตอบทั้ง 10 ข้อและความรู้สึกของเพื่อนแต่ละคนในทีม</p>
+                    </div>
+                    <!-- Member Search Filter -->
+                    <div class="w-full sm:w-auto">
+                        <input type="text" id="summarySearchInput" oninput="renderUserSummaries()" placeholder="🔍 ค้นหาชื่อเพื่อน..." class="w-full sm:w-48 bg-black text-white text-xs p-2 rounded-lg border border-spooky-yellow focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- User Summary Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="userSummariesGrid">
+                    <!-- Javascript generated user summary cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: STORYTELLING ZONE ================= -->
+        <section id="section-stories" class="space-y-6 hidden">
+            <div class="bg-spooky-cardBg/90 border-2 border-spooky-orange rounded-2xl p-5 shadow-2xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 border-b border-spooky-orange/40 pb-4">
+                    <div>
+                        <h2 class="text-spooky-orange font-scary text-xl md:text-2xl flex items-center gap-2">
+                            <span>📜 เรื่องเล่าจากสุสาน & CORE MEMORIES</span>
+                        </h2>
+                        <p class="text-xs text-purple-200 mt-1">แชร์เรื่องผีหลอกกลางวันแสกๆ บั๊กหลอนๆ หรือปาฏิหาริย์ที่ทำให้รอดตายมาได้</p>
+                    </div>
+                    <!-- Story Category Filter -->
+                    <div class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto w-full sm:w-auto">
+                        <button onclick="filterStories('all')" id="story-filter-all" class="story-filter-btn active bg-spooky-orange text-black px-3 py-1.5 rounded pixel-btn">ทั้งหมด</button>
+                        <button onclick="filterStories('funny')" id="story-filter-funny" class="story-filter-btn bg-black text-pink-300 hover:bg-stone-900 px-3 py-1.5 rounded pixel-btn border border-spooky-purple">👻 เรื่องผีฮาๆ</button>
+                        <button onclick="filterStories('fight')" id="story-filter-fight" class="story-filter-btn bg-black text-amber-300 hover:bg-stone-900 px-3 py-1.5 rounded pixel-btn border border-spooky-purple">⚔️ หนีตายสู้ชีวิต</button>
+                        <button onclick="filterStories('learn')" id="story-filter-learn" class="story-filter-btn bg-black text-emerald-300 hover:bg-stone-900 px-3 py-1.5 rounded pixel-btn border border-spooky-purple">🔮 เวทมนตร์ปราบผี</button>
+                    </div>
+                </div>
+
+                <!-- Story Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="storiesGrid">
+                    <!-- Javascript generated stories -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: SHOUT OUT & KUDOS WALL ================= -->
+        <section id="section-shoutout" class="space-y-6 hidden">
+            <div class="bg-spooky-cardBg/90 border-2 border-spooky-green rounded-2xl p-5 shadow-2xl">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 border-b border-spooky-green/40 pb-4">
+                    <div>
+                        <h2 class="text-spooky-green font-scary text-xl md:text-2xl flex items-center gap-2">
+                            <span>🧹 ป้ายไฟปราบผี & TRICK OR TREAT</span>
+                        </h2>
+                        <p class="text-xs text-purple-200 mt-1">แจกขนม ขอบคุณ หมอผี และนักปราบผีในทีมที่ช่วยให้พวกเรารอดพ้นคืนฮาโลวีนนี้</p>
+                    </div>
+                    <button onclick="openModalForShoutout()" class="bg-spooky-green hover:bg-green-600 text-black font-extrabold px-4 py-2 rounded-lg text-xs pixel-btn border-2 border-black flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> ยกป้ายไฟปราบผี
+                    </button>
+                </div>
+
+                <!-- Shout Out Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="shoutoutsGrid">
+                    <!-- Javascript generated shoutouts -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t-2 border-spooky-purple bg-spooky-dark py-4 px-4 text-center text-xs text-purple-300 mt-8">
+        Halloween Sprint Nightmare & Treat Retro &bull; Spooky Synth Sound Edition 🎃👻🕸️
+    </footer>
+
+    <!-- DYNAMIC MODAL (For Adding Stories / Shoutouts) -->
+    <div id="cardModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-spooky-cardBg border-4 border-spooky-orange rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform transition-all">
+            <div class="bg-black p-4 border-b-2 border-spooky-orange flex items-center justify-between">
+                <h3 id="modalTitle" class="font-bold text-spooky-orange text-sm font-pixel flex items-center gap-2">
+                    <span>🎃 เพิ่มรายการ</span>
+                </h3>
+                <button onclick="closeModal()" class="text-stone-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="cardForm" onsubmit="handleFormSubmit(event)" class="p-5 space-y-4">
+                <input type="hidden" id="formType" value="story">
+
+                <!-- Fields for Story -->
+                <div id="storyFields" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-spooky-orange mb-1">หมวดหมู่เรื่องเล่า *</label>
+                        <select id="storyCategory" class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-orange">
+                            <option value="funny">👻 เรื่องผีฮาๆ ประจำ Sprint</option>
+                            <option value="fight">⚔️ หนีตายสู้ชีวิต / แก้ไขเฉพาะหน้า</option>
+                            <option value="learn">🔮 เวทมนตร์คาถา / บทเรียนที่ได้</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-spooky-orange mb-1">เนื้อเรื่องสยองขวัญ / บทเรียน *</label>
+                        <textarea id="storyText" rows="3" placeholder="พิมพ์เรื่องราวบั๊กผีหลอก หรือปาฏิหาริย์ใน Sprint..." class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-orange leading-relaxed"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-spooky-orange mb-1">ชื่อผู้เล่า / ฉายาหมอผี</label>
+                        <input type="text" id="storyAuthor" placeholder="เช่น GhostBuster_Dev, Witch_QA" class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-orange">
+                    </div>
+                </div>
+
+                <!-- Fields for Shoutout -->
+                <div id="shoutoutFields" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-spooky-green mb-1">มอบยศปราบผี / Badge *</label>
+                        <select id="shoutoutBadge" class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-green">
+                            <option value="🎃 Pumpkin Saver ผู้กอบกู้ทีม">🎃 Pumpkin Saver ผู้กอบกู้ทีม</option>
+                            <option value="🧛 Vampire MVP สู้ดึกดื่น">🧛 Vampire MVP สู้ดึกดื่น</option>
+                            <option value="🧹 Witch Doctor คาถาแก้บั๊ก">🧹 Witch Doctor คาถาแก้บั๊ก</option>
+                            <option value="👻 Ghost Buster นักปราบผี">👻 Ghost Buster นักปราบผี</option>
+                            <option value="🧪 Mad Scientist เสกฟีเจอร์โหด">🧪 Mad Scientist เสกฟีเจอร์โหด</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-spooky-green mb-1">ยกป้ายไฟให้ใคร *</label>
+                            <input type="text" id="shoutoutTo" placeholder="ชื่อเพื่อนร่วมทีม" class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-green">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-spooky-green mb-1">จากใคร (ชื่อคุณ)</label>
+                            <input type="text" id="shoutoutFrom" placeholder="ชื่อของคุณ" class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-green">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-spooky-green mb-1">ข้อความขอบคุณ / Trick or Treat *</label>
+                        <textarea id="shoutoutMessage" rows="3" placeholder="เขียนคำขอบคุณ หรือมอบขนมปราบผีให้เพื่อน..." class="w-full bg-black text-white text-xs rounded-lg p-2.5 border-2 border-spooky-purple focus:outline-none focus:border-spooky-green leading-relaxed"></textarea>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-stone-800">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold border border-black pixel-btn">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 rounded bg-spooky-orange hover:bg-orange-500 text-black text-xs font-extrabold border-2 border-black pixel-btn">เสกการ์ดลงบอร์ด</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- USER DETAIL SUMMARY MODAL -->
+    <div id="userDetailModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-spooky-cardBg border-4 border-spooky-yellow rounded-2xl w-full max-w-2xl max-h-[85vh] shadow-2xl flex flex-col overflow-hidden">
+            <div class="bg-black p-4 border-b-2 border-spooky-yellow flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🧙‍♂️</span>
+                    <h3 id="userDetailTitle" class="font-bold text-spooky-yellow text-sm font-pixel">
+                        รายละเอียดคำตอบของ: Alex
+                    </h3>
+                </div>
+                <button onclick="closeUserDetailModal()" class="text-stone-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="userDetailBody" class="p-5 overflow-y-auto space-y-3 flex-grow">
+                <!-- Javascript populated user answers -->
+            </div>
+
+            <div class="bg-black/80 p-3 border-t border-stone-800 flex justify-end">
+                <button onclick="closeUserDetailModal()" class="px-5 py-2 rounded bg-spooky-yellow hover:bg-yellow-400 text-black font-extrabold text-xs pixel-btn">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <script>
+        // Web Audio API Sound Generator
+        let isSoundEnabled = true;
+        let soundMode = 'dracula'; // Default sound mode: Dracula Laugh ("ฮ๊าๆๆๆ!")
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const btnText = document.getElementById('soundToggleText');
+            const btn = document.getElementById('soundToggleBtn');
+            if (isSoundEnabled) {
+                btnText.innerText = 'เปิดเสียงสยอง';
+                btn.classList.remove('opacity-50');
+                playDraculaLaugh('short');
+            } else {
+                btnText.innerText = 'ปิดเสียงสยอง';
+                btn.classList.add('opacity-50');
+            }
+        }
+
+        function switchSoundMode() {
+            soundMode = soundMode === 'dracula' ? 'horror' : 'dracula';
+            const btnText = document.getElementById('soundModeText');
+            btnText.innerText = soundMode === 'dracula' ? 'Dracula Laugh' : 'Horror Screech';
+            if (soundMode === 'dracula') {
+                playDraculaLaugh('standard');
+            } else {
+                playHorrorSound('select');
+            }
+            showToast(`เปลี่ยนโหมดเสียงเป็น: ${soundMode === 'dracula' ? '🧛‍♂️ เสียงหัวเราะแดร็กคูลา (ฮ๊าๆๆๆ!)' : '👻 เสียงกรีดร้องสยองขวัญ (Horror Screech)'}`, 'info');
+        }
+
+        // Distinct Dracula "ฮ๊าๆๆๆ! Mwahahaha!" Evil Laugh Generator
+        function playDraculaLaugh(length = 'standard') {
+            if (!isSoundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                const burstPattern = length === 'long' 
+                    ? [140, 260, 230, 200, 170, 140, 110, 90]   // Long evil laugh
+                    : (length === 'short' 
+                        ? [220, 180, 140]                      // "ฮ๊าๆๆ!"
+                        : [240, 210, 180, 150, 120]);          // Standard "มัวฮ่าๆๆๆ!"
+
+                burstPattern.forEach((freq, idx) => {
+                    const startTime = now + idx * 0.11;
+                    const duration = 0.10;
+
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(freq * 0.7, startTime + duration);
+
+                    gain.gain.setValueAtTime(0.01, startTime);
+                    gain.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(startTime);
+                    osc.stop(startTime + duration);
+
+                    const subOsc = ctx.createOscillator();
+                    const subGain = ctx.createGain();
+                    subOsc.type = 'square';
+                    subOsc.frequency.setValueAtTime(freq * 0.5, startTime);
+                    
+                    subGain.gain.setValueAtTime(0.12, startTime);
+                    subGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+                    subOsc.connect(subGain);
+                    subGain.connect(ctx.destination);
+
+                    subOsc.start(startTime);
+                    subOsc.stop(startTime + duration);
+                });
+            } catch (e) {
+                console.log('Audio playback prevented', e);
+            }
+        }
+
+        // Bone-Chilling Horror Screech Generator (Web Audio API)
+        function playHorrorSound(type = 'select') {
+            if (!isSoundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'select') {
+                    const osc1 = ctx.createOscillator();
+                    const osc2 = ctx.createOscillator();
+                    const screechGain = ctx.createGain();
+
+                    osc1.type = 'sawtooth';
+                    osc2.type = 'square';
+                    osc1.frequency.setValueAtTime(1450, now);
+                    osc2.frequency.setValueAtTime(1510, now);
+                    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.35);
+                    osc2.frequency.exponentialRampToValueAtTime(290, now + 0.35);
+
+                    screechGain.gain.setValueAtTime(0.01, now);
+                    screechGain.gain.linearRampToValueAtTime(0.2, now + 0.03);
+                    screechGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                    osc1.connect(screechGain);
+                    osc2.connect(screechGain);
+                    screechGain.connect(ctx.destination);
+
+                    osc1.start(now);
+                    osc2.start(now);
+                    osc1.stop(now + 0.35);
+                    osc2.stop(now + 0.35);
+
+                    const subOsc = ctx.createOscillator();
+                    const subGain = ctx.createGain();
+                    subOsc.type = 'sine';
+                    subOsc.frequency.setValueAtTime(120, now);
+                    subOsc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
+
+                    subGain.gain.setValueAtTime(0.3, now);
+                    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+                    subOsc.connect(subGain);
+                    subGain.connect(ctx.destination);
+                    subOsc.start(now);
+                    subOsc.stop(now + 0.25);
+
+                } else if (type === 'jumpscare' || type === 'success') {
+                    const bufferSize = ctx.sampleRate * 0.5;
+                    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = Math.random() * 2 - 1;
+                    }
+
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = buffer;
+
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(3000, now);
+                    filter.frequency.exponentialRampToValueAtTime(150, now + 0.5);
+
+                    const noiseGain = ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.35, now);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                    noise.connect(filter);
+                    filter.connect(noiseGain);
+                    noiseGain.connect(ctx.destination);
+                    noise.start(now);
+
+                    [200, 311, 415, 622].forEach((freq) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, now);
+                        osc.frequency.exponentialRampToValueAtTime(freq * 2.2, now + 0.4);
+
+                        gain.gain.setValueAtTime(0.12, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.45);
+                    });
+
+                } else if (type === 'lock' || type === 'warning') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    
+                    osc.frequency.setValueAtTime(80, now);
+                    osc.frequency.linearRampToValueAtTime(140, now + 0.1);
+                    osc.frequency.linearRampToValueAtTime(90, now + 0.2);
+                    osc.frequency.linearRampToValueAtTime(160, now + 0.3);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                }
+            } catch (e) {
+                console.log('Horror audio playback prevented', e);
+            }
+        }
+
+        function triggerSound(type = 'select') {
+            if (soundMode === 'dracula') {
+                if (type === 'success' || type === 'jumpscare') playDraculaLaugh('long');
+                else if (type === 'lock' || type === 'warning') playDraculaLaugh('short');
+                else playDraculaLaugh('standard');
+            } else {
+                playHorrorSound(type);
+            }
+        }
+
+        // 10 Halloween Spooky Sprint Questions
+        const questionsData = [
+            {
+                id: 1,
+                stage: 'Sprint Planning',
+                title: '1. ตอนรับการ์ดงาน รู้สึกเหมือนเปิดบ้านผีสิงแบบไหน?',
+                desc: 'ช่วงวางแผน Sprint และการประเมิน Scope งาน',
+                options: [
+                    'A. ชิวๆ เหมือนเดินผ่านหุ่นฟาง ไร้แรงปะทะ',
+                    'B. ตกใจกรีดร้อง งานด่วนแทรกเข้ามาโผล่หน้า',
+                    'C. หลอนวิญญาณหลอก Scope บานฉ่ำไร้ขอบเขต',
+                    'D. มืดแปดด้าน หาตารางงานและความชัดเจนไม่เจอ'
+                ]
+            },
+            {
+                id: 2,
+                stage: 'Daily Sync',
+                title: '2. บรรยากาศตอนอัปเดตงานประจำวัน (Daily) เหมือนอะไร?',
+                desc: 'การสื่อสารและเช็กสถานะงานประจำวันในทีม',
+                options: [
+                    'A. ซอมบี้เดินงกๆ ไร้สติ มึนงงตอบไม่ตรงคำถาม',
+                    'B. สวดมนต์ไล่ผี ขอให้งานของตัวเองเสร็จทันวันนี้',
+                    'C. ชวนผีคุย เม้าท์มอยกระจาย บรรยากาศเป็นกันเอง',
+                    'D. เงียบเป็นป่าช้า ไม่มีใครเปิดไมค์พูดอะไรเลย'
+                ]
+            },
+            {
+                id: 3,
+                stage: 'Mid-Sprint Issue',
+                title: '3. เมื่อเจอเควสต์ด่วน / บั๊กงอกกลาง Sprint รู้สึกยังไง?',
+                desc: 'การรับมือกับเหตุการณ์ไม่คาดฝันกลางทาง',
+                options: [
+                    'A. ผีหลอกกลางวันแสกๆ โค้ดพังทันทีแบบงงๆ',
+                    'B. เสกคาถาแก้บั๊ก รอดมาได้ทันเวลาพอดี',
+                    'C. วิญญาณหลุดออกจากร่าง นั่งเหม่อไปครึ่งวัน',
+                    'D. วิ่งหนีสุดชีวิต โยนงานด่วนให้เพื่อนรับช่วงต่อ'
+                ]
+            },
+            {
+                id: 4,
+                stage: 'Teamwork',
+                title: '4. การทำงานร่วมกันในทีมเหมือนแก๊งปราบผีสไตล์ไหน?',
+                desc: 'การช่วยเหลือและความซัพพอร์ตกันภายในทีม',
+                options: [
+                    'A. Ghostbusters สามัคคีปราบผีอย่างราบรื่น',
+                    'B. ต่างคนต่างวิ่งหนีผี ตัวใครตัวมันเอาชีวิตรอดก่อน',
+                    'C. ร่ายมนต์สายมู ช่วยกันแก้โค้ดแท็กทีมทรงพลัง',
+                    'D. ถือไฟฉายส่องหน้ากันเอง หาคนรับผิดชอบอุปสรรค'
+                ]
+            },
+            {
+                id: 5,
+                stage: 'Tech Debt',
+                title: '5. โค้ดเน่า / งานดอง (Technical Debt) สะสมขนาดไหน?',
+                desc: 'คุณภาพโค้ดและความระดมเทคเดบต์ในระบบ',
+                options: [
+                    'A. สะอาดสะอ้าน ปราศจากมลพิษ ผีไม่กล้ากล้ำกราย',
+                    'B. มีหยากไย่แมงมุมนิดหน่อย พอทำความสะอาดได้',
+                    'C. บ้านร้างผีสิง ใครแตะไฟล์นี้โดนคำสาปทันที',
+                    'D. สุสานโบราณ ห้ามใครเปิดไฟล์นี้เด็ดขาด!'
+                ]
+            },
+            {
+                id: 6,
+                stage: 'Work-Life Balance',
+                title: '6. พลังชีวิต (HP) ของทีมตอนเลิกงานแต่ละวันเป็นยังไง?',
+                desc: 'ความเหนื่อยล้าและระดับพลังงานของสมาชิกในทีม',
+                options: [
+                    'A. พลังเต็มเปี่ยม พร้อมบินรอบเมืองในคืนฮาโลวีน',
+                    'B. วิญญาณหลุดร่างครึ่งเดียว แต่ยังพอไหวอยู่',
+                    'C. โดนสูบพลัง กลายเป็นแดร็กคิวล่าอดนอนตาโหล',
+                    'D. ตายแล้วฟื้นไม่ได้ อยากนอนยาวๆ ในโลงศพ'
+                ]
+            },
+            {
+                id: 7,
+                stage: 'Demo & Review',
+                title: '7. ตอนพรีเซนต์งานให้ Stakeholder หรือลูกค้าดู เป็นยังไง?',
+                desc: 'การส่งมอบและโชว์ผลงานใน Sprint Review',
+                options: [
+                    'A. แจกขนม Trick or Treat ได้รอยยิ้มสดใสกลับมา',
+                    'B. เสกมายากลผ่านฉลุยแบบฉิวเฉียดไร้ที่ติ',
+                    'C. โดนผีหลอก Demo Crashed ต่อหน้าต่อตา',
+                    'D. รอดตายปาฏิหาริย์ ถอนหายใจเฮือกใหญ่อย่างเบาใจ'
+                ]
+            },
+            {
+                id: 8,
+                stage: 'Sprint Nightmare',
+                title: '8. อาถรรพ์มืดใน Sprint นี้: เจอ "เรื่องหลอน" อะไรมากที่สุด?',
+                desc: 'ปัญหาสุดสยองที่เป็นฝันร้ายหลักของทีมใน Sprint นี้',
+                options: [
+                    'A. บั๊กผีหลอน แก้ยังไงก็ไม่หาย พักแป๊บเดียวโผล่มาใหม่',
+                    'B. คำสาปใบสั่งเปลี่ยน Scope นาทีสุดท้ายก่อน Demo',
+                    'C. วิญญาณไร้ร่องรอย Requirement คลุมเครือหาคนสั่งไม่ได้',
+                    'D. เสียงกระซิบเที่ยงคืน ทักไลน์ด่วนนอกเวลาทำงาน'
+                ]
+            },
+            {
+                id: 9,
+                stage: 'Action Item',
+                title: '9. สิ่งที่เราต้องเสกคาถาปรับปรุงใน Sprint หน้าคืออะไร?',
+                desc: 'เป้าหมายสำคัญในการแก้ปัญหาสำหรับ Sprint ถัดไป',
+                options: [
+                    'A. สร้างเกราะป้องกัน Scope ด่วนแทรกให้แข็งแกร่ง',
+                    'B. เพิ่มน้ำยาเพิ่มพลัง HP ไม่ให้ทีมต้องอดนอน',
+                    'C. เขียนคู่มือปราบผี (Documentation) ให้ชัดเจน',
+                    'D. เพิ่มป้ายไฟ Shout Out ขอบคุณเพื่อนบ่อยๆ'
+                ]
+            },
+            {
+                id: 10,
+                stage: 'Overall Vibe',
+                title: '10. สรุปบรรยากาศรวมของ Sprint นี้ ให้กี่ดาว?',
+                desc: 'ภาพรวมคะแนนความประทับใจและความสำเร็จของ Sprint',
+                options: [
+                    'A. 🌟🌟🌟🌟🌟 5 ดาว สดใสไม่โดนผีหลอก',
+                    'B. 🌟🌟🌟🌟 4 ดาว ผีหลอกบ้างแต่รอดมาได้',
+                    'C. 🌟🌟🌟 3 ดาว สู้ชีวิตหนักมาก แต่ก็สู้กลับ',
+                    'D. 🌟 1 ดาว หลอนสุดขีด ขอพักฟื้นร่างด่วน!'
+                ]
+            }
+        ];
+
+        // Sample Initial Data
+        const initialUserSummaries = [
+            {
+                id: 'usr1',
+                userName: 'Alex (Frontend)',
+                feelings: 'รู้สึกเหนื่อยแต่สนุกมากที่ช่วยกันแก้ไขบั๊กนาทีสุดท้ายผ่านไปได้แบบเส้นยาแดงผ่าแปด!',
+                shoutoutTo: 'พี่บอย (DevOps)',
+                shoutoutMessage: 'ขอบคุณที่ช่วยกู้คืนเซิร์ฟเวอร์ตอนเที่ยงคืน คืนวันพุธครับ!',
+                submittedAt: '2026-10-29 10:30',
+                answers: { 1: 0, 2: 1, 3: 1, 4: 0, 5: 1, 6: 1, 7: 1, 8: 0, 9: 0, 10: 1 }
+            },
+            {
+                id: 'usr2',
+                userName: 'Bow (QA Witch)',
+                feelings: 'Sprint นี้ทีมสื่อสารกันดีมาก อยากให้ช่วยกันตรวจ Spec ก่อนส่ง QA หน่อยน้า',
+                shoutoutTo: 'Alex (Dev)',
+                shoutoutMessage: 'ช่วยแก้บั๊กเร็วมากๆ QA ตรวจทันเวลาพอดีค่ะ',
+                submittedAt: '2026-10-29 11:15',
+                answers: { 1: 1, 2: 2, 3: 0, 4: 2, 5: 2, 6: 2, 7: 3, 8: 1, 9: 2, 10: 2 }
+            }
+        ];
+
+        const initialStories = [
+            {
+                id: 's1',
+                category: 'funny',
+                text: 'แก้บั๊กตัวเดิมไป 3 รอบ นึกว่าหายแล้ว ตอน Demo บน Prod ดันฟื้นคืนชีพโผล่มาทักทายลูกค้าเหมือนผีดิบ!',
+                author: 'GhostBuster_Dev',
+                likes: 8,
+                color: 'orange'
+            },
+            {
+                id: 's2',
+                category: 'fight',
+                text: 'เจอเควสต์ด่วนเข้ามาคืนวันอังคาร แต่ทีมสวดมนต์แท็กทีมช่วยกันร่ายโค้ดจนผ่านไปได้แบบเส้นยาแดงผ่าแปด!',
+                author: 'Pumpkin_Ranger (PO)',
+                likes: 12,
+                color: 'purple'
+            }
+        ];
+
+        const initialShoutouts = [
+            {
+                id: 'sh1',
+                badge: '🎃 Pumpkin Saver ผู้กอบกู้ทีม',
+                to: 'พี่บอย (DevOps)',
+                from: 'แอน (BE)',
+                message: 'ขอบคุณที่ช่วยกู้คืนเซิร์ฟเวอร์ตอนเที่ยงคืน คืนวันพุธ สมกับเป็นผู้กอบกู้ในคืนฮาโลวีนจริง!',
+                likes: 15
+            }
+        ];
+
+        // App State
+        let currentTab = 'questions';
+        let quizAnswers = {};
+        let userSummaries = [];
+        let stories = [];
+        let shoutouts = [];
+        let activeStoryFilter = 'all';
+        let isAdminMode = false;
+
+        window.onload = function() {
+            const savedAnswers = localStorage.getItem('spooky_quiz_answers');
+            const savedSummaries = localStorage.getItem('spooky_user_summaries');
+            const savedStories = localStorage.getItem('spooky_stories');
+            const savedShoutouts = localStorage.getItem('spooky_shoutouts');
+
+            if (savedAnswers) quizAnswers = JSON.parse(savedAnswers);
+            userSummaries = savedSummaries ? JSON.parse(savedSummaries) : [...initialUserSummaries];
+            stories = savedStories ? JSON.parse(savedStories) : [...initialStories];
+            shoutouts = savedShoutouts ? JSON.parse(savedShoutouts) : [...initialShoutouts];
+
+            renderQuestions();
+            renderUserSummaries();
+            renderStories();
+            renderShoutouts();
+        };
+
+        function switchTab(tab) {
+            triggerSound('select');
+            currentTab = tab;
+            ['questions', 'summary', 'stories', 'shoutout'].forEach(t => {
+                const section = document.getElementById(`section-${t}`);
+                const tabBtn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    section.classList.remove('hidden');
+                    tabBtn.classList.add('text-spooky-yellow', 'bg-spooky-purple/60', 'border', 'border-spooky-yellow');
+                    tabBtn.classList.remove('text-stone-300');
+                } else {
+                    section.classList.add('hidden');
+                    tabBtn.classList.remove('text-spooky-yellow', 'bg-spooky-purple/60', 'border', 'border-spooky-yellow');
+                    tabBtn.classList.add('text-stone-300');
+                }
+            });
+
+            const addBtnLabel = document.getElementById('addBtnLabel');
+            if (tab === 'shoutout') addBtnLabel.innerText = 'เพิ่มป้ายไฟ';
+            else addBtnLabel.innerText = 'เพิ่มเรื่องเล่า';
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsGrid');
+            container.innerHTML = '';
+
+            questionsData.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'bg-black/70 border-2 border-spooky-purple p-4 rounded-xl flex flex-col justify-between space-y-3 shadow-lg hover:border-spooky-orange transition-all';
+
+                let optionsHtml = '';
+                q.options.forEach((opt, idx) => {
+                    const isSelected = quizAnswers[q.id] === idx;
+                    optionsHtml += `
+                        <button onclick="selectOption(${q.id}, ${idx})" class="w-full text-left p-2.5 rounded-lg border text-xs transition-all flex items-center justify-between ${
+                            isSelected 
+                                ? 'bg-spooky-orange/20 border-spooky-orange text-spooky-yellow font-bold shadow-md' 
+                                : 'bg-stone-900/80 border-stone-800 text-stone-300 hover:border-spooky-purple hover:bg-stone-800'
+                        }">
+                            <span>${opt}</span>
+                            ${isSelected ? '<span class="text-spooky-green font-pixel text-[10px]">✓ SELECTED</span>' : ''}
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="px-2 py-0.5 rounded bg-spooky-purple text-white text-[10px] font-bold uppercase">${q.stage}</span>
+                            <span class="text-[10px] text-stone-400 font-pixel">ข้อ ${q.id}/10</span>
+                        </div>
+                        <h3 class="text-xs md:text-sm font-bold text-spooky-orange mb-1 leading-snug">${q.title}</h3>
+                        <p class="text-[11px] text-purple-200 mb-3">${q.desc}</p>
+                        <div class="space-y-1.5">${optionsHtml}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answeredCount = Object.keys(quizAnswers).length;
+            const progressPercent = (answeredCount / 10) * 100;
+            
+            const progressText = document.getElementById('quizProgressText');
+            const progressBar = document.getElementById('quizProgressBar');
+
+            if (progressText) progressText.innerText = `${answeredCount}/10 ข้อ`;
+            if (progressBar) progressBar.style.width = `${progressPercent}%`;
+        }
+
+        function selectOption(qId, optionIdx) {
+            triggerSound('select');
+            quizAnswers[qId] = optionIdx;
+            localStorage.setItem('spooky_quiz_answers', JSON.stringify(quizAnswers));
+            renderQuestions();
+        }
+
+        function submitUserRetro() {
+            const userName = getCurrentUserName();
+            if (!userName) {
+                triggerSound('lock');
+                showToast('กรุณากรอกชื่อหมอผี/ชื่อของคุณก่อนส่งผลสรุป 🧙‍♂️', 'info');
+                document.getElementById('userNameInput').focus();
+                return;
+            }
+
+            const answeredCount = Object.keys(quizAnswers).length;
+            if (answeredCount < 10) {
+                triggerSound('lock');
+                showToast(`ตอบคำถามยังไม่ครบ (${answeredCount}/10 ข้อ) กรุณาตอบให้ครบก่อนส่ง 🎃`, 'info');
+                return;
+            }
+
+            triggerSound('success');
+            const feelingsText = document.getElementById('userFeelingsInput').value.trim();
+            const shoutoutTo = document.getElementById('userShoutoutToInput').value.trim();
+            const shoutoutMsg = document.getElementById('userShoutoutMsgInput').value.trim();
+
+            const newSummary = {
+                id: Date.now().toString(),
+                userName: userName,
+                feelings: feelingsText || 'ไม่ได้ระบุความรู้สึก',
+                shoutoutTo: shoutoutTo,
+                shoutoutMessage: shoutoutMsg,
+                submittedAt: new Date().toISOString().replace('T', ' ').slice(0, 16),
+                answers: { ...quizAnswers }
+            };
+
+            userSummaries = userSummaries.filter(u => u.userName.toLowerCase() !== userName.toLowerCase());
+            userSummaries.unshift(newSummary);
+
+            if (shoutoutTo && shoutoutMsg) {
+                shoutouts.unshift({
+                    id: Date.now().toString() + '_auto',
+                    badge: '🎃 Pumpkin Saver ผู้กอบกู้ทีม',
+                    to: shoutoutTo,
+                    from: userName,
+                    message: shoutoutMsg,
+                    likes: 1
+                });
+                localStorage.setItem('spooky_shoutouts', JSON.stringify(shoutouts));
+                renderShoutouts();
+            }
+
+            localStorage.setItem('spooky_user_summaries', JSON.stringify(userSummaries));
+            renderUserSummaries();
+            showToast('ส่งผลสรุปของคุณเรียบร้อยแล้ว! 🧟‍♂️', 'success');
+            switchTab('summary');
+        }
+
+        function toggleAdminMode() {
+            triggerSound('select');
+            isAdminMode = !isAdminMode;
+            const btn = document.getElementById('adminToggleBtn');
+            const btnText = document.getElementById('adminToggleText');
+            if (isAdminMode) {
+                btnText.innerText = '👑 โหมด Admin (ปลดล็อกทั้งหมด)';
+                btn.classList.remove('border-spooky-purple', 'text-stone-400');
+                btn.classList.add('border-spooky-green', 'text-spooky-green');
+                showToast('เปิดโหมด Admin/Facilitator แล้ว สามารถดูสรุปได้ทุกการ์ด 👑', 'info');
+            } else {
+                btnText.innerText = '🔒 โหมดสมาชิกปกติ';
+                btn.classList.remove('border-spooky-green', 'text-spooky-green');
+                btn.classList.add('border-spooky-purple', 'text-stone-400');
+                showToast('กลับสู่โหมดปกติ (ดูได้เฉพาะการ์ดของตนเองเท่านั้น) 🔒', 'info');
+            }
+            renderUserSummaries();
+        }
+
+        function getCurrentUserName() {
+            return (document.getElementById('userNameInput')?.value || '').trim();
+        }
+
+        function renderUserSummaries() {
+            const container = document.getElementById('userSummariesGrid');
+            container.innerHTML = '';
+
+            const currentUserName = getCurrentUserName();
+            const searchTerm = (document.getElementById('summarySearchInput')?.value || '').toLowerCase();
+            const filtered = userSummaries.filter(u => u.userName.toLowerCase().includes(searchTerm));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full h-40 flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-stone-700 rounded-xl text-stone-500">
+                        <span class="text-3xl mb-2">🧟</span>
+                        <p class="text-xs">ยังไม่มีสรุปผลรายบุคคล</p>
+                        <p class="text-[11px] text-purple-300 mt-1">ไปที่แท็บ "10 คำถามอาถรรพ์" เพื่อตอบให้ครบแล้วส่งการ์ดสรุปของคุณได้เลย</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(u => {
+                const isOwner = currentUserName && u.userName.toLowerCase() === currentUserName.toLowerCase();
+                const canAccess = isOwner || isAdminMode;
+
+                const card = document.createElement('div');
+                card.className = `bg-black/80 border-2 p-4 rounded-xl flex flex-col justify-between transition-all pixel-btn relative overflow-hidden ${
+                    canAccess ? 'border-spooky-yellow hover:border-spooky-orange cursor-pointer' : 'border-stone-800 opacity-80 cursor-not-allowed'
+                }`;
+                card.onclick = () => openUserDetailModal(u.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase ${
+                                isOwner ? 'bg-spooky-green text-black' : (canAccess ? 'bg-spooky-yellow text-black' : 'bg-stone-800 text-stone-400')
+                            }">
+                                ${isOwner ? '👑 คุณ (OWNER)' : '🧙‍♂️ MEMBER'}
+                            </span>
+                            <span class="text-[10px] text-stone-400 font-pixel">${u.submittedAt || ''}</span>
+                        </div>
+                        <h3 class="text-sm font-extrabold text-spooky-orange mb-1 truncate flex items-center justify-between">
+                            <span>${escapeHtml(u.userName)}</span>
+                            ${!canAccess ? '<span class="text-stone-500 text-xs">🔒</span>' : ''}
+                        </h3>
+                        <p class="text-xs text-stone-300 italic line-clamp-2 bg-stone-900/80 p-2 rounded border border-stone-800 mt-2">
+                            💬 "${escapeHtml(u.feelings || 'ไม่ได้ระบุความรู้สึก')}"
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-stone-800 flex items-center justify-between text-xs">
+                        <span class="text-spooky-green font-bold">10/10 คำตอบ</span>
+                        ${canAccess 
+                            ? '<span class="text-spooky-yellow font-bold underline flex items-center gap-1">คลิกเปิดดู 👁️</span>' 
+                            : '<span class="text-stone-500 font-bold flex items-center gap-1">🔒 ล็อกไว้ (เฉพาะ Owner)</span>'
+                        }
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openUserDetailModal(userId) {
+            const user = userSummaries.find(u => u.id === userId);
+            if (!user) return;
+
+            const currentUserName = getCurrentUserName();
+            const isOwner = currentUserName && user.userName.toLowerCase() === currentUserName.toLowerCase();
+
+            if (!isOwner && !isAdminMode) {
+                triggerSound('lock');
+                showToast('🔒 คุณไม่มีสิทธิ์ดูสรุปของคนอื่น (เปิดได้เฉพาะเจ้าของบัตร / Owner เท่านั้น)', 'info');
+                return;
+            }
+
+            triggerSound('select');
+            document.getElementById('userDetailTitle').innerText = `รายละเอียดคำตอบของ: ${user.userName} ${isOwner ? '(การ์ดของคุณ)' : ''}`;
+            const body = document.getElementById('userDetailBody');
+            body.innerHTML = '';
+
+            const feelingsBlock = document.createElement('div');
+            feelingsBlock.className = 'bg-spooky-yellow/10 border-2 border-spooky-yellow p-3.5 rounded-xl mb-3 text-xs space-y-1';
+            feelingsBlock.innerHTML = `
+                <div class="font-bold text-spooky-yellow flex items-center gap-1.5">
+                    💬 ความรู้สึกใน Sprint นี้:
+                </div>
+                <div class="text-stone-200 leading-relaxed font-medium pt-1">
+                    "${escapeHtml(user.feelings || 'ไม่ได้ระบุความรู้สึก')}"
+                </div>
+            `;
+            body.appendChild(feelingsBlock);
+
+            if (user.shoutoutTo || user.shoutoutMessage) {
+                const shoutoutBlock = document.createElement('div');
+                shoutoutBlock.className = 'bg-spooky-purple/20 border-2 border-spooky-purple p-3.5 rounded-xl mb-4 text-xs space-y-1';
+                shoutoutBlock.innerHTML = `
+                    <div class="font-bold text-spooky-purple flex items-center gap-1.5">
+                        📣 Shout Out พิเศษถึงเพื่อน:
+                    </div>
+                    <div class="text-spooky-yellow font-bold">
+                        ยกป้ายไฟให้: <span class="underline">${escapeHtml(user.shoutoutTo || 'เพื่อนร่วมทีม')}</span>
+                    </div>
+                    <div class="text-stone-200 italic leading-relaxed pt-0.5">
+                        "${escapeHtml(user.shoutoutMessage || 'ไม่ได้ระบุข้อความขอบคุณ')}"
+                    </div>
+                `;
+                body.appendChild(shoutoutBlock);
+            }
+
+            questionsData.forEach(q => {
+                const optIdx = user.answers[q.id];
+                const selectedText = optIdx !== undefined ? q.options[optIdx] : 'ไม่ได้เลือกคำตอบ';
+
+                const item = document.createElement('div');
+                item.className = 'bg-black/60 border border-spooky-purple p-3 rounded-lg text-xs space-y-1';
+                item.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] bg-spooky-purple text-white px-1.5 py-0.5 rounded font-bold">${q.stage}</span>
+                        <span class="text-[10px] text-stone-400">ข้อ ${q.id}</span>
+                    </div>
+                    <div class="font-bold text-spooky-orange">${q.title}</div>
+                    <div class="p-2 bg-stone-900/90 text-spooky-yellow rounded border border-stone-800 font-medium">
+                        👉 ${escapeHtml(selectedText)}
+                    </div>
+                `;
+                body.appendChild(item);
+            });
+
+            document.getElementById('userDetailModal').classList.remove('hidden');
+        }
+
+        function closeUserDetailModal() {
+            document.getElementById('userDetailModal').classList.add('hidden');
+        }
+
+        function renderStories() {
+            const container = document.getElementById('storiesGrid');
+            container.innerHTML = '';
+
+            const filtered = stories.filter(s => activeStoryFilter === 'all' || s.category === activeStoryFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full h-40 flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-stone-700 rounded-xl text-stone-500">
+                        <span class="text-3xl mb-2">👻</span>
+                        <p class="text-xs">ยังไม่มีเรื่องเล่าในหมวดนี้</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const categoryNames = { funny: '👻 เรื่องผีฮาๆ', fight: '⚔️ หนีตายสู้ชีวิต', learn: '🔮 เวทมนตร์ปราบผี' };
+                const bgColors = {
+                    orange: 'bg-gradient-to-br from-orange-200 to-amber-300 border-orange-500 text-stone-900',
+                    purple: 'bg-gradient-to-br from-purple-200 to-pink-300 border-purple-500 text-stone-900',
+                    green: 'bg-gradient-to-br from-emerald-200 to-teal-300 border-emerald-500 text-stone-900'
+                };
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = `sticky-note p-4 rounded-xl border-2 relative flex flex-col justify-between ${bgColors[s.color || 'orange']}`;
+
+                cardDiv.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-black/15 text-stone-900">
+                                ${categoryNames[s.category] || 'Story'}
+                            </span>
+                            <button onclick="deleteStory('${s.id}')" class="hover:text-red-700 text-xs p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs font-semibold leading-relaxed mb-3 break-words">
+                            "${escapeHtml(s.text)}"
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-black/15 text-[11px] font-bold">
+                        <span class="truncate max-w-[120px]">🧙‍♂️ ${escapeHtml(s.author || 'หมอผีประจำทีม')}</span>
+                        <button onclick="likeStory('${s.id}')" class="flex items-center gap-1 bg-white/70 hover:bg-white px-2 py-0.5 rounded-full border border-black/20">
+                            🎃 <span>${s.likes || 0}</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function filterStories(cat) {
+            triggerSound('select');
+            activeStoryFilter = cat;
+            document.querySelectorAll('.story-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-spooky-orange', 'text-black');
+                btn.classList.add('bg-black', 'text-stone-300');
+            });
+            const btn = document.getElementById(`story-filter-${cat}`);
+            if (btn) {
+                btn.classList.remove('bg-black', 'text-stone-300');
+                btn.classList.add('active', 'bg-spooky-orange', 'text-black');
+            }
+            renderStories();
+        }
+
+        function likeStory(id) {
+            triggerSound('select');
+            const item = stories.find(s => s.id === id);
+            if (item) {
+                item.likes = (item.likes || 0) + 1;
+                localStorage.setItem('spooky_stories', JSON.stringify(stories));
+                renderStories();
+            }
+        }
+
+        function deleteStory(id) {
+            stories = stories.filter(s => s.id !== id);
+            localStorage.setItem('spooky_stories', JSON.stringify(stories));
+            renderStories();
+        }
+
+        function renderShoutouts() {
+            const container = document.getElementById('shoutoutsGrid');
+            container.innerHTML = '';
+
+            if (shoutouts.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full h-40 flex flex-col items-center justify-center text-center p-4 border-2 border-dashed border-stone-700 rounded-xl text-stone-500">
+                        <span class="text-3xl mb-2">🧹</span>
+                        <p class="text-xs">ยังไม่มีป้ายไฟปราบผี</p>
+                    </div>
+                `;
+                return;
+            }
+
+            shoutouts.forEach(sh => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'sticky-note p-4 rounded-xl border-2 border-emerald-400 bg-gradient-to-br from-emerald-100 to-teal-200 text-stone-900 flex flex-col justify-between';
+
+                cardDiv.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-emerald-950 text-emerald-200">
+                                ${escapeHtml(sh.badge)}
+                            </span>
+                            <button onclick="deleteShoutout('${sh.id}')" class="hover:text-red-700 text-xs p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <h4 class="text-xs font-black text-emerald-950 mb-1">ถึง: ${escapeHtml(sh.to)}</h4>
+                        <p class="text-xs font-semibold leading-relaxed mb-3 break-words">
+                            "${escapeHtml(sh.message)}"
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-black/15 text-[11px] font-bold">
+                        <span class="truncate max-w-[120px]">จาก: ${escapeHtml(sh.from || 'เพื่อนร่วมทีม')}</span>
+                        <button onclick="likeShoutout('${sh.id}')" class="flex items-center gap-1 bg-white/70 hover:bg-white px-2 py-0.5 rounded-full border border-black/20">
+                            🍬 <span>${sh.likes || 0}</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function likeShoutout(id) {
+            triggerSound('select');
+            const item = shoutouts.find(s => s.id === id);
+            if (item) {
+                item.likes = (item.likes || 0) + 1;
+                localStorage.setItem('spooky_shoutouts', JSON.stringify(shoutouts));
+                renderShoutouts();
+            }
+        }
+
+        function deleteShoutout(id) {
+            shoutouts = shoutouts.filter(s => s.id !== id);
+            localStorage.setItem('spooky_shoutouts', JSON.stringify(shoutouts));
+            renderShoutouts();
+        }
+
+        function openModalForCurrentTab() {
+            if (currentTab === 'shoutout') openModalForShoutout();
+            else openModalForStory();
+        }
+
+        function openModalForStory() {
+            triggerSound('select');
+            document.getElementById('modalTitle').innerText = '📜 เล่าเรื่องสยอง / บทเรียน';
+            document.getElementById('formType').value = 'story';
+            document.getElementById('storyFields').classList.remove('hidden');
+            document.getElementById('shoutoutFields').classList.add('hidden');
+            document.getElementById('storyText').value = '';
+            document.getElementById('storyAuthor').value = '';
+            document.getElementById('cardModal').classList.remove('hidden');
+        }
+
+        function openModalForShoutout() {
+            triggerSound('select');
+            document.getElementById('modalTitle').innerText = '🧹 ยกป้ายไฟปราบผี';
+            document.getElementById('formType').value = 'shoutout';
+            document.getElementById('storyFields').classList.add('hidden');
+            document.getElementById('shoutoutFields').classList.remove('hidden');
+            document.getElementById('shoutoutTo').value = '';
+            document.getElementById('shoutoutFrom').value = '';
+            document.getElementById('shoutoutMessage').value = '';
+            document.getElementById('cardModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('cardModal').classList.add('hidden');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const formType = document.getElementById('formType').value;
+
+            if (formType === 'story') {
+                const category = document.getElementById('storyCategory').value;
+                const text = document.getElementById('storyText').value.trim();
+                const author = document.getElementById('storyAuthor').value.trim();
+
+                if (!text) return;
+
+                triggerSound('success');
+                const colors = { funny: 'orange', fight: 'purple', learn: 'green' };
+
+                stories.push({
+                    id: Date.now().toString(),
+                    category: category,
+                    text: text,
+                    author: author || 'หมอผีประจำทีม',
+                    likes: 0,
+                    color: colors[category] || 'orange'
+                });
+
+                localStorage.setItem('spooky_stories', JSON.stringify(stories));
+                renderStories();
+                switchTab('stories');
+            } else if (formType === 'shoutout') {
+                const badge = document.getElementById('shoutoutBadge').value;
+                const to = document.getElementById('shoutoutTo').value.trim();
+                const from = document.getElementById('shoutoutFrom').value.trim();
+                const message = document.getElementById('shoutoutMessage').value.trim();
+
+                if (!to || !message) return;
+
+                triggerSound('success');
+
+                shoutouts.push({
+                    id: Date.now().toString(),
+                    badge: badge,
+                    to: to,
+                    from: from || 'เพื่อนร่วมทีม',
+                    message: message,
+                    likes: 0
+                });
+
+                localStorage.setItem('spooky_shoutouts', JSON.stringify(shoutouts));
+                renderShoutouts();
+                switchTab('shoutout');
+            }
+
+            closeModal();
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'info' ? 'bg-stone-900 text-stone-200 border-stone-700' : 'bg-spooky-orange text-black font-extrabold border-black';
+
+            toast.className = `px-4 py-2.5 rounded-xl border-2 shadow-2xl text-xs flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto ${bgColor}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'info' ? 'fa-circle-info' : 'fa-ghost'}"></i> ${message}`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
